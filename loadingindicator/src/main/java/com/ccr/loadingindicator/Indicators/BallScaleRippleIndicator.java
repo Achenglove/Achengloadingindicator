@@ -1,0 +1,60 @@
+package com.ccr.loadingindicator.Indicators;
+
+import android.animation.ValueAnimator;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.view.animation.LinearInterpolator;
+
+import com.ccr.loadingindicator.Indicator;
+
+import java.util.ArrayList;
+
+/**
+ * 在此写用途
+ *
+ * @Author: Acheng
+ * @Email: 345887272@qq.com
+ * @Date: 2017-08-19 10:10
+ * @Version: V1.0 <描述当前版本功能>
+ */
+
+public class BallScaleRippleIndicator extends BallScaleIndicator {
+    @Override
+    public void draw(Canvas canvas, Paint paint) {
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(3);
+        super.draw(canvas, paint);
+    }
+
+    @Override
+    public ArrayList<ValueAnimator> onCreateAnimators() {
+        ArrayList<ValueAnimator> animators=new ArrayList<>();
+        ValueAnimator scaleAnim=ValueAnimator.ofFloat(0,1);
+        scaleAnim.setInterpolator(new LinearInterpolator());
+        scaleAnim.setDuration(1000);
+        scaleAnim.setRepeatCount(-1);
+        addUpdateListener(scaleAnim,new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                scale = (float) animation.getAnimatedValue();
+                postInvalidate();
+            }
+        });
+
+        ValueAnimator alphaAnim=ValueAnimator.ofInt(0, 255);
+        alphaAnim.setInterpolator(new LinearInterpolator());
+        alphaAnim.setDuration(1000);
+        alphaAnim.setRepeatCount(-1);
+        addUpdateListener(alphaAnim,new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                alpha = (int) animation.getAnimatedValue();
+                postInvalidate();
+            }
+        });
+
+        animators.add(scaleAnim);
+        animators.add(alphaAnim);
+        return animators;
+    }
+}
